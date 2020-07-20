@@ -2,6 +2,7 @@ import os
 import pygame
 import time
 import random
+from datetime import datetime
 
 class pyscope :
     screen = None;
@@ -55,7 +56,9 @@ class pyscope :
         self.screen.fill(gray)
         fontfile = 'Digestive.otf'
         font = pygame.font.Font(fontfile, 120)
-        text = font.render("THIS IS A TEST", True, white)
+        gettime = datetime.now()
+        now = gettime.strftime("%H:%M:%S")
+        text = font.render(now, True, white)
         textRect = text.get_rect()
         textRect.center = (X // 2, Y // 2)
         self.screen.blit(text, textRect)
