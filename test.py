@@ -28,53 +28,57 @@ blue = (0, 0, 128)
 X = 640
 Y = 360
 
-display_surface = pygame.display.set_mode((X, Y))
+display_surface = pygame.display.set_mode((X, Y),)#pygame.FULLSCREEN)
 
-fontfile = 'aAtmospheric.ttf'
+fontfile = 'Digestive.otf'
 
-font = pygame.font.Font(fontfile, 32)
+font = pygame.font.Font(fontfile, 120)
+
 
 # create a text suface object, 
 # on which text is drawn on it. 
-gettime = datetime.now()
 
+gettime = datetime.now()
 now = gettime.strftime("%H:%M:%S")
-text = font.render(now, True, white) 
+text = font.render(now, True, white)
   
 # create a rectangular object for the 
 # text surface object 
 textRect = text.get_rect()
-  
-# set the center of the rectangular object. 
+
+# set the center of the rectangular object.
 textRect.center = (X // 2, Y // 2) 
 
 clock = pygame.time.Clock()
 
 # infinite loop 
-while True : 
+while True :
     clock.tick()
     # completely fill the surface object
     # with white color
-    now = gettime.strftime("%H:%M:%S")
-    text = font.render(now, True, white) 
     display_surface.fill(black)
+    gettime = datetime.today()
+    newsec = str(gettime.strftime("%S"))
+    #newmin = str(int(int(gettime.strftime("%f"))*.66)/100000)
+    text = font.render(newsec, True, white)
     # copying the text surface object 
     # to the display surface object  
-    # at the center coordinate. 
+    # at the center coordinate.
     display_surface.blit(text, textRect)
+    pygame.display.update() 
     # iterate over the list of Event objects 
     # that was returned by pygame.event.get() method. 
     for event in pygame.event.get():
-        # if event object type is QUIT 
+        # if event object type is QUIT
         # then quitting the pygame 
         # and program both. 
         if event.type == pygame.QUIT : 
   
             # deactivates the pygame library 
-            pygame.quit() 
+            pygame.quit()
   
             # quit the program. 
             quit() 
   
         # Draws the surface object to the screen.   
-        pygame.display.update() 
+        pygame.display.update()
