@@ -53,9 +53,9 @@ class pyscope :
         self.screen.fill(gray)
         fontfile = 'Digestive.otf'
         font = pygame.font.Font(fontfile, 120)
+        text = font.render("THIS IS A TEST", True, white)
         textRect = text.get_rect()
         textRect.center = (X // 2, Y // 2)
-        text = font.render("THIS IS A TEST", True, white)
         # Update the display
         pygame.display.update()
 
