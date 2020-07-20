@@ -16,13 +16,13 @@
 
 import pygame
 from datetime import datetime
-import os
+#import os
 
 # os.environ["SDL_VIDEODRIVER"]="dummy"
 pygame.init()
 
-os.putenv('SDL_VIDEODRIVER', 'fbcon')
-pygame.display.init()
+# os.putenv('SDL_VIDEODRIVER', 'fbcon')
+# pygame.display.init()
 
 pygame.display.set_caption('Show Text')
 
