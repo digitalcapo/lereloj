@@ -61,7 +61,7 @@ class pyscope :
         text = font.render(now, True, white)
         textRect = text.get_rect()
         textRect.center = (X // 2, Y // 2)
-        for x in range(0,150):
+        for x in range(0,1850):
             clock.tick()
             self.screen.fill(gray)
             gettime = datetime.now()
