@@ -48,6 +48,7 @@ class pyscope :
         "Destructor to make sure pygame shuts down, etc."
 
     def test(self):
+        clock = pygame.time.Clock()
         # Fill the screen with red (255, 0, 0)
         gray = (50, 50, 50)
         white = (255,255,255)
@@ -56,12 +57,14 @@ class pyscope :
         self.screen.fill(gray)
         fontfile = 'Digestive.otf'
         font = pygame.font.Font(fontfile, 120)
-        for x in range(0,60):
+        text = font.render(now, True, white)
+        textRect = text.get_rect()
+        textRect.center = (X // 2, Y // 2)
+        while True:
+            clock.tick()
             gettime = datetime.now()
             now = gettime.strftime("%H:%M:%S")
             text = font.render(now, True, white)
-            textRect = text.get_rect()
-            textRect.center = (X // 2, Y // 2)
             self.screen.blit(text, textRect)
             # Update the display
             pygame.display.update()
