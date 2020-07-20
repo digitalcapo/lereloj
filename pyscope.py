@@ -54,7 +54,6 @@ class pyscope :
         white = (255,255,255)
         X = 1920
         Y = 1080
-        self.screen.fill(gray)
         fontfile = 'Digestive.otf'
         font = pygame.font.Font(fontfile, 120)
         gettime = datetime.now()
@@ -64,6 +63,7 @@ class pyscope :
         textRect.center = (X // 2, Y // 2)
         while True:
             clock.tick()
+            self.screen.fill(gray)
             gettime = datetime.now()
             now = gettime.strftime("%H:%M:%S")
             text = font.render(now, True, white)
