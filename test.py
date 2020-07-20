@@ -18,7 +18,7 @@ import pygame
 from datetime import datetime
 import os
 
-os.environ("SDL_VIDEODRIVER") = "dummy"
+os.environ["SDL_VIDEODRIVER"]="dummy"
 pygame.init()
 
 pygame.display.set_caption('Show Text')
