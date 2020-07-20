@@ -50,6 +50,8 @@ class pyscope :
         # Fill the screen with red (255, 0, 0)
         gray = (50, 50, 50)
         white = (255,255,255)
+        X = 1920
+        Y = 1080
         self.screen.fill(gray)
         fontfile = 'Digestive.otf'
         font = pygame.font.Font(fontfile, 120)
