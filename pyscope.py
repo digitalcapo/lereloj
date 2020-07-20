@@ -56,14 +56,15 @@ class pyscope :
         self.screen.fill(gray)
         fontfile = 'Digestive.otf'
         font = pygame.font.Font(fontfile, 120)
-        gettime = datetime.now()
-        now = gettime.strftime("%H:%M:%S")
-        text = font.render(now, True, white)
-        textRect = text.get_rect()
-        textRect.center = (X // 2, Y // 2)
-        self.screen.blit(text, textRect)
-        # Update the display
-        pygame.display.update()
+        for x in range(0,60):
+            gettime = datetime.now()
+            now = gettime.strftime("%H:%M:%S")
+            text = font.render(now, True, white)
+            textRect = text.get_rect()
+            textRect.center = (X // 2, Y // 2)
+            self.screen.blit(text, textRect)
+            # Update the display
+            pygame.display.update()
 
 # Create an instance of the PyScope class
 scope = pyscope()
