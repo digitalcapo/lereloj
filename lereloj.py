@@ -87,7 +87,7 @@ class lereloj:
         fontFile = 'Digestive.otf'
         font = pygame.font.Font(fontFile, 420)
         opt = 0
-        for x in range(0,2000):
+        while True:
             clock.tick(100)
             for event in pygame.event.get(): # User did something.
                 if event.type == pygame.JOYBUTTONDOWN:
