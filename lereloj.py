@@ -31,10 +31,10 @@ class lereloj:
             except pygame.error:
                 print('Pygame Display Init failed')
 
-            size = (pygame.display.Info().current_w,
+            self.size = (pygame.display.Info().current_w,
                     pygame.display.Info().current_h)
 
-            print("Framebuffer size: {0} x {1}".format(size[0], size[1]))
+            print("Framebuffer size: {0} x {1}".format(self.size[0], self.size[1]))
             self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
             # Clear screen
             self.screen.fill((0,0,0))
@@ -46,7 +46,7 @@ class lereloj:
         else:
             pygame.display.init()
             pygame.joystick.init()
-            gamepad = pygame.joystick.Joystick(0)
+            gamepad = pygame.joystick.Joystick(1)
             gamepad.init()
             pygame.font.init()
             self.screen = pygame.display.set_mode((1920,1080))
@@ -97,7 +97,7 @@ class lereloj:
             self.screen.fill(self.black)
             text = font.render(str('{:02d}'.format(self.decimalTime()[opt])), True, self.white)
             textRect = text.get_rect()
-            textRect.center = (1980//2,1080//2)
+            textRect.center = (self.size[0]//2,self.size[1]//2)
             self.screen.blit(text,textRect)
             pygame.display.update()
     
