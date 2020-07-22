@@ -85,7 +85,7 @@ class lereloj:
     def leClock(self):
         clock = pygame.time.Clock()
         fontFile = 'Digestive.otf'
-        font = pygame.font.Font(fontFile, 180)
+        font = pygame.font.Font(fontFile, 420)
         opt = 0
         for x in range(0,2000):
             clock.tick(100)
@@ -107,7 +107,6 @@ class lereloj:
     
     def __del__(self):
         "Destructor to make sure pygame shuts down"
-
 
 if __name__ == '__main__':
     lereloj = lereloj()
