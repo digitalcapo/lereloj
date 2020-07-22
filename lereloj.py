@@ -41,6 +41,10 @@ class lereloj:
             # Init font support
             # Will replace later with ptext module
             pygame.font.init()
+            # init Joystick 
+            pygame.joystick.init()
+            gamepad = pygame.joystick.Joystick(0)
+            gamepad.init()
             # Render screen
             pygame.display.update()
         else:
