@@ -19,7 +19,7 @@ class lereloj:
         self.gray = (125,125,125)
 
         if not pc:
-            # quick and dirty way 
+            # quick and dirty way to debug on PC
             #
             disp_no = os.getenv("DISPLAY")
             if disp_no:
@@ -45,8 +45,11 @@ class lereloj:
             pygame.display.update()
         else:
             pygame.display.init()
+            pygame.joystick.init()
+            gamepad = pygame.joystick.Joystick(0)
+            gamepad.init()
             pygame.font.init()
-            self.screen = pygame.display.set_mode((640,360))
+            self.screen = pygame.display.set_mode((1920,1080))
             self.screen.fill((0,0,0))
             pygame.display.update()
 
@@ -55,36 +58,51 @@ class lereloj:
         """
         :return: Decimal time according to local time zone
         :rtype: list
+        Based on metric-time by Lakhan Mankani
+        https://pypi.org/project/metric-time/
         """
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
         now = datetime.now(ltz)
-        # Calcuate time from midnight
+        # Calcuate seconds from midnight
         midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
         nsfm = (now - midnight).total_seconds()
         # Remap normal seconds to metric seconds
         metricSeconds = nsfm / 0.864
-
+        # Remap clock from metric seconds
         hours = int(metricSeconds / 10000)
         minutes = int(metricSeconds / 100) % 100
         seconds = int(metricSeconds % 100)
         miliseconds = int((metricSeconds - int(metricSeconds)) * 1000)
         metricTime = [hours,minutes,seconds,miliseconds]
+        # Return a list with clock values
         return metricTime
 
     def leClock(self):
         clock = pygame.time.Clock()
         fontFile = 'Digestive.otf'
         font = pygame.font.Font(fontFile, 180)
-        for x in range(0,40000):
-            clock.tick()
+        opt = 0
+        for x in range(0,2000):
+            clock.tick(100)
+            for event in pygame.event.get(): # User did something.
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if opt < 3:
+                        opt = opt+1
+                    else:
+                        opt = 0
+                    print("Joystick button pressed.")
+                elif event.type == pygame.JOYBUTTONUP:
+                    print("Joystick button released.")
             self.screen.fill(self.black)
-            text = font.render(str(self.decimalTime()), True, self.white)
+            text = font.render(str('{:02d}'.format(self.decimalTime()[opt])), True, self.white)
             textRect = text.get_rect()
-            textRect.center = (640//2,360//2)
+            textRect.center = (1980//2,1080//2)
             self.screen.blit(text,textRect)
             pygame.display.update()
-    # def __del__(self):
+    
+    def __del__(self):
+        "Destructor to make sure pygame shuts down"
 
 
 if __name__ == '__main__':
