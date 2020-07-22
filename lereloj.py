@@ -35,7 +35,7 @@ class lereloj:
                     pygame.display.Info().current_h)
 
             print("Framebuffer size: {0} x {1}".format(self.size[0], self.size[1]))
-            self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+            self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
             # Clear screen
             self.screen.fill((0,0,0))
             # Init font support
