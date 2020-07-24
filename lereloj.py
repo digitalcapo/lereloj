@@ -18,48 +18,48 @@ class lereloj:
         self.white = (255,255,255)
         self.black = (0,0,0)
         self.gray = (125,125,125)
+        # if not pc:
+        #     # quick and dirty way to debug on PC
+        #     #
+        #     disp_no = os.getenv("DISPLAY")
+        #     if disp_no:
+        #         print("I'm running under X display = {0}".format(disp_no))
+        #     # Use fbcon as display driver
+        #     os.putenv('SDL_VIDEODRIVER', 'fbcon')
+        #     try:
+        #         pygame.display.init()
+        #     except pygame.error:
+        #         print('Pygame Display Init failed')
 
-        if not pc:
-            # quick and dirty way to debug on PC
-            #
-            disp_no = os.getenv("DISPLAY")
-            if disp_no:
-                print("I'm running under X display = {0}".format(disp_no))
-            # Use fbcon as display driver
-            os.putenv('SDL_VIDEODRIVER', 'fbcon')
-            try:
-                pygame.display.init()
-            except pygame.error:
-                print('Pygame Display Init failed')
+        #     self.size = (pygame.display.Info().current_w,
+        #             pygame.display.Info().current_h)
 
-            self.size = (pygame.display.Info().current_w,
+        #     print("Framebuffer size: {0} x {1}".format(self.size[0], self.size[1]))
+        #     self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
+        #     # Clear screen
+        #     self.screen.fill((0,0,0))
+        #     # Init font support
+        #     # Will replace later with ptext module
+        #     pygame.font.init()
+        #     # init Joystick 
+        #     # Replace with connect / disconnect function
+        #     pygame.joystick.init()
+        #     gamepad = pygame.joystick.Joystick(0)
+        #     gamepad.init()
+        #     # Render screen
+        #     pygame.display.update()
+        # else:
+        pygame.display.init()
+        self.size = (pygame.display.Info().current_w,
                     pygame.display.Info().current_h)
-
-            print("Framebuffer size: {0} x {1}".format(self.size[0], self.size[1]))
-            self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
-            # Clear screen
-            self.screen.fill((0,0,0))
-            # Init font support
-            # Will replace later with ptext module
-            pygame.font.init()
-            # init Joystick 
-            # Replace with connect / disconnect function
-            pygame.joystick.init()
-            gamepad = pygame.joystick.Joystick(0)
-            gamepad.init()
-            # Render screen
-            pygame.display.update()
-        else:
-            pygame.display.init()
-            self.size = (pygame.display.Info().current_w,
-                        pygame.display.Info().current_h)
-            pygame.joystick.init()
-            gamepad = pygame.joystick.Joystick(0)
-            gamepad.init()
-            pygame.font.init()
-            self.screen = pygame.display.set_mode((1280,720))
-            self.screen.fill((0,0,0))
-            pygame.display.update()
+        pygame.joystick.init()
+        gamepad = pygame.joystick.Joystick(0)
+        gamepad.init()
+        pygame.font.init()
+        #self.screen = pygame.display.set_mode((1280,720))
+        self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
+        self.screen.fill((0,0,0))
+        pygame.display.update()
 
     def leClock(self):
         """
