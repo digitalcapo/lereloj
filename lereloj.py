@@ -101,8 +101,8 @@ class lereloj:
         opt = 0
         bgcolor = self.black
         fontcolor = self.white
-        #while True:
-        for x in range(0,600):
+        while True:
+        #for x in range(0,600):
             clock.tick(100)
             displaylist = self.leClock()
             for event in pygame.event.get():
