@@ -3,8 +3,9 @@ import os
 import time
 from datetime import datetime
 import pytz.reference
+import repubcal
 
-pc = False
+pc = True
 
 class lereloj:
     screen = None;
@@ -42,6 +43,7 @@ class lereloj:
             # Will replace later with ptext module
             pygame.font.init()
             # init Joystick 
+            # Replace with connect / disconnect function
             pygame.joystick.init()
             gamepad = pygame.joystick.Joystick(0)
             gamepad.init()
@@ -49,22 +51,30 @@ class lereloj:
             pygame.display.update()
         else:
             pygame.display.init()
+            self.size = (pygame.display.Info().current_w,
+                        pygame.display.Info().current_h)
             pygame.joystick.init()
-            gamepad = pygame.joystick.Joystick(1)
+            gamepad = pygame.joystick.Joystick(0)
             gamepad.init()
             pygame.font.init()
-            self.screen = pygame.display.set_mode((1920,1080))
+            self.screen = pygame.display.set_mode((1280,720))
             self.screen.fill((0,0,0))
             pygame.display.update()
 
-
-    def decimalTime(self):
+    def leClock(self):
         """
-        :return: Decimal time according to local time zone
+        :return: Republican Calendar and Decimal  Time 
+                 according to local time zone
         :rtype: list
-        Based on metric-time by Lakhan Mankani
+        Using repubcal module from https://github.com/Nimlar/repubcal
+        Decimal time formula based on metric-time by Lakhan Mankani
         https://pypi.org/project/metric-time/
         """
+        date = repubcal.RDate.today()
+        season = "{:%rf}".format(date)
+        day = "{:%rA}".format(date)
+        month = "{:%rB}".format(date)
+        year = "{:%ry}".format(date)
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
         now = datetime.now(ltz)
@@ -74,32 +84,41 @@ class lereloj:
         # Remap normal seconds to metric seconds
         metricSeconds = nsfm / 0.864
         # Remap clock from metric seconds
-        hours = int(metricSeconds / 10000)
-        minutes = int(metricSeconds / 100) % 100
-        seconds = int(metricSeconds % 100)
-        miliseconds = int((metricSeconds - int(metricSeconds)) * 1000)
-        metricTime = [hours,minutes,seconds,miliseconds]
-        # Return a list with clock values
-        return metricTime
+        hours = "{:02d}".format((int(metricSeconds / 10000)))
+        minutes = "{:02d}".format(int(metricSeconds / 100) % 100)
+        seconds = "{:02d}".format(int(metricSeconds % 100))
+        miliseconds = "{:03d}".format(int((metricSeconds - int(metricSeconds)) * 1000))
+        leclock = [year,month,day,season,
+                   hours,minutes,seconds,miliseconds]
+        # Return a list with calendar and clock values
+        return leclock
 
-    def leClock(self):
+    def leDisplay(self):
         clock = pygame.time.Clock()
         fontFile = 'Digestive.otf'
-        font = pygame.font.Font(fontFile, 420)
+        fontSize = 420
+        font = pygame.font.Font(fontFile, fontSize)
         opt = 0
-        while True:
+        bgcolor = self.black
+        fontcolor = self.white
+        #while True:
+        for x in range(0,600):
             clock.tick(100)
-            for event in pygame.event.get(): # User did something.
+            displaylist = self.leClock()
+            for event in pygame.event.get():
                 if event.type == pygame.JOYBUTTONDOWN:
-                    if opt < 3:
+                    if opt < len(displaylist)-1:
                         opt = opt+1
                     else:
                         opt = 0
-                    print("Joystick button pressed.")
-                elif event.type == pygame.JOYBUTTONUP:
-                    print("Joystick button released.")
-            self.screen.fill(self.black)
-            text = font.render(str('{:02d}'.format(self.decimalTime()[opt])), True, self.white)
+                    if opt <= 3:
+                        bgcolor = self.black
+                        fontcolor = self.white
+                    else:
+                        bgcolor = self.white
+                        fontcolor = self.black
+            self.screen.fill(bgcolor)
+            text = font.render(str((displaylist[opt])), True, fontcolor)
             textRect = text.get_rect()
             textRect.center = (self.size[0]//2,self.size[1]//2)
             self.screen.blit(text,textRect)
@@ -110,4 +129,4 @@ class lereloj:
 
 if __name__ == '__main__':
     lereloj = lereloj()
-    lereloj.leClock()
+    lereloj.leDisplay()
