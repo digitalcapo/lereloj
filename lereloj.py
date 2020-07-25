@@ -94,6 +94,7 @@ class lereloj:
         fontOffsetY = 0
         font = pygame.font.Font(fontFile, fontSize)
         opt = 0
+        rotate = 90
         bgcolor = self.black
         fontcolor = self.white
         #while True:
@@ -102,7 +103,6 @@ class lereloj:
             displaylist = self.leClock()
             for event in pygame.event.get():
                 if event.type == pygame.JOYBUTTONDOWN:
-                    if event.
                     if opt < len(displaylist)-1:
                         opt = opt+1
                     else:
@@ -115,7 +115,7 @@ class lereloj:
                         fontcolor = self.black
             self.screen.fill(bgcolor)
             text = font.render(str((displaylist[opt])), True, fontcolor)
-            rtext = pygame.transform.rotate(text, 90)
+            rtext = pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
             textRect.center = (self.size[0]//2+fontOffsetX,self.size[1]//2+fontOffsetY)
             self.screen.blit(rtext,textRect)
