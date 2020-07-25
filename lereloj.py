@@ -5,76 +5,66 @@ from datetime import datetime
 import pytz.reference
 import repubcal
 
-pc = True
 
 class lereloj:
     screen = None;
 
     def __init__(self):
-        "Initializes a new pygame using the framebuffer"
-        # Based on "Python GUI in Linux frame buffer"
-        # http://www.karoltomala.com/blog/?p=679
+        """
+        Initializes a new pygame instance using display resolution as fullscreen
+        """
+        # Let's set some variables first!
         # Define color pallete for further use
         self.white = (255,255,255)
         self.black = (0,0,0)
         self.gray = (125,125,125)
-        # if not pc:
-        #     # quick and dirty way to debug on PC
-        #     #
-        #     disp_no = os.getenv("DISPLAY")
-        #     if disp_no:
-        #         print("I'm running under X display = {0}".format(disp_no))
-        #     # Use fbcon as display driver
-        #     os.putenv('SDL_VIDEODRIVER', 'fbcon')
-        #     try:
-        #         pygame.display.init()
-        #     except pygame.error:
-        #         print('Pygame Display Init failed')
-
-        #     self.size = (pygame.display.Info().current_w,
-        #             pygame.display.Info().current_h)
-
-        #     print("Framebuffer size: {0} x {1}".format(self.size[0], self.size[1]))
-        #     self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
-        #     # Clear screen
-        #     self.screen.fill((0,0,0))
-        #     # Init font support
-        #     # Will replace later with ptext module
-        #     pygame.font.init()
-        #     # init Joystick 
-        #     # Replace with connect / disconnect function
-        #     pygame.joystick.init()
-        #     gamepad = pygame.joystick.Joystick(0)
-        #     gamepad.init()
-        #     # Render screen
-        #     pygame.display.update()
-        # else:
+        # Initialize display and get screen resolution
         pygame.display.init()
         self.size = (pygame.display.Info().current_w,
                     pygame.display.Info().current_h)
+        # Inits joystick support
+        # Replace later with a full function that updates in the mainloop
         pygame.joystick.init()
         gamepad = pygame.joystick.Joystick(0)
         gamepad.init()
+        # Inits Font Support
         pygame.font.init()
-        #self.screen = pygame.display.set_mode((1280,720))
+        # Set display mode and display update
         self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
-        self.screen.fill((0,0,0))
+        self.screen.fill(self.black)
+        pygame.mouse.set_visible(False)
         pygame.display.update()
+
+    def getCurrentSeason(self, date):
+        """
+        Checks month number and returns current season
+        """
+        nmonth = int("{:%rm}".format(date))
+        seasons = ["Automne","Hiver","Printemps","Été"]
+        if nmonth >= 1 and nmonth <= 3:
+            return seasons[0]
+        elif nmonth > 3 and nmonth <= 6:
+            return seasons[1]
+        elif nmonth > 6  and nmonth <= 9:
+            return seasons[2]
+        elif nmonth > 9 and nmonth <= 12:
+            return seasons[3]
 
     def leClock(self):
         """
-        :return: Republican Calendar and Decimal  Time 
-                 according to local time zone
+        :return: Republican Calendar and Decimal  Time according to local time zone
         :rtype: list
-        Using repubcal module from https://github.com/Nimlar/repubcal
-        Decimal time formula based on metric-time by Lakhan Mankani
-        https://pypi.org/project/metric-time/
+        # Using repubcal module from https://github.com/Nimlar/repubcal
+        # Decimal time formula based on metric-time by Lakhan Mankani
+        # https://pypi.org/project/metric-time/
         """
+        # Get current date
         date = repubcal.RDate.today()
-        season = "{:%rf}".format(date)
-        day = "{:%rA}".format(date)
-        month = "{:%rB}".format(date)
+        # Remap to Republican Calendar
         year = "{:%ry}".format(date)
+        month = "{:%rB}".format(date)
+        day = "{:%rA}".format(date)
+        season = str(self.getCurrentSeason(date))
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
         now = datetime.now(ltz)
@@ -94,19 +84,25 @@ class lereloj:
         return leclock
 
     def leDisplay(self):
+        """
+        Main Loop. Renders text and modifies position and scale using gamepad input
+        """
         clock = pygame.time.Clock()
         fontFile = 'Digestive.otf'
-        fontSize = 420
+        fontSize = 320
+        fontOffsetX = 0
+        fontOffsetY = 0
         font = pygame.font.Font(fontFile, fontSize)
         opt = 0
         bgcolor = self.black
         fontcolor = self.white
-        while True:
-        #for x in range(0,600):
+        #while True:
+        for x in range(0,5000):
             clock.tick(100)
             displaylist = self.leClock()
             for event in pygame.event.get():
                 if event.type == pygame.JOYBUTTONDOWN:
+                    if event.
                     if opt < len(displaylist)-1:
                         opt = opt+1
                     else:
@@ -119,9 +115,10 @@ class lereloj:
                         fontcolor = self.black
             self.screen.fill(bgcolor)
             text = font.render(str((displaylist[opt])), True, fontcolor)
-            textRect = text.get_rect()
-            textRect.center = (self.size[0]//2,self.size[1]//2)
-            self.screen.blit(text,textRect)
+            rtext = pygame.transform.rotate(text, 90)
+            textRect = rtext.get_rect()
+            textRect.center = (self.size[0]//2+fontOffsetX,self.size[1]//2+fontOffsetY)
+            self.screen.blit(rtext,textRect)
             pygame.display.update()
     
     def __del__(self):
