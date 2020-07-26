@@ -117,6 +117,7 @@ class lereloj:
         bgcolor = jsondata[4]
         fontcolor = jsondata[5]
         run = True
+        font = pygame.font.Font(fontFile, fontSize)
         editMode = False
         while run == True:
             clock.tick(100)
@@ -134,6 +135,7 @@ class lereloj:
                                 self.saveJSON(dictdata)
                                 editMode = False
                         if editMode == True:
+                            font = pygame.font.Font(fontFile, fontSize)
                             if g.get_button(4):
                                 fontSize = int(fontSize/1.1)
                             if g.get_button(5):
@@ -166,7 +168,6 @@ class lereloj:
                             elif g.get_axis(0) < -0.1:
                                 fontOffsetY = fontOffsetY + 20
             self.screen.fill(bgcolor)
-            font = pygame.font.Font(fontFile, fontSize)
             text = font.render(str((displaylist[opt])), True, fontcolor)
             rtext = pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
