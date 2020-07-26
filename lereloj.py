@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import pytz.reference
 import repubcal
+import argo
 
 class lereloj:
     screen = None;
@@ -23,9 +24,14 @@ class lereloj:
                     pygame.display.Info().current_h)
         # Inits joystick support
         # Replace later with a full function that updates in the mainloop
-        pygame.joystick.init()
-        self.gamepad = pygame.joystick.Joystick(0)
-        self.gamepad.init()
+        self.gamepadpresent = False
+        try:
+            pygame.joystick.init()
+            self.gamepad = pygame.joystick.Joystick(0)
+            self.gamepad.init()
+            self.gamepadpresent = True
+        except:
+            print("No Joystick present. Moving on.")
         # Inits Font Support
         pygame.font.init()
         # Set display mode and display update
@@ -49,9 +55,22 @@ class lereloj:
         elif nmonth > 9 and nmonth <= 12:
             return seasons[3]
 
+    def getJSON(self):
+        jsonFile = './config.json'
+        data = []
+        data = argo.JSON.bringThis(self,jsonFile)
+        return data
+
+    def saveJSON(self,data):
+        jsonFile = './config.json'
+        try:
+            argo.JSON.saveThis(self,data,jsonFile)
+        except Exception as e:
+            print("NOPE because: {0}".format(e))
+
     def leClock(self):
         """
-        :return: Republican Calendar and Decimal Time according to local time zone
+        :return: Republican Calendar & Decimal Time in local time zone
         :rtype: list
         # Using repubcal module from https://github.com/Nimlar/repubcal
         # Decimal time formula based on metric-time by Lakhan Mankani
@@ -88,56 +107,71 @@ class lereloj:
         Main Loop. Renders text, with position and scale set by gamepad input
         """
         clock = pygame.time.Clock()
+        jsondata = self.getJSON()
         fontFile = 'Digestive.otf'
-        fontSize = 320
-        fontOffsetX = 0
-        fontOffsetY = 0
-        opt = 0
+        fontOffsetX = jsondata[0]
+        fontOffsetY = jsondata[1]
+        fontSize = jsondata[2]
+        opt = jsondata[3]
         rotate = 90
-        bgcolor = self.black
-        fontcolor = self.white
+        bgcolor = jsondata[4]
+        fontcolor = jsondata[5]
         run = True
+        editMode = False
         while run == True:
             clock.tick(100)
             displaylist = self.leClock()
-            for event in pygame.event.get():
-                if event.type == pygame.JOYAXISMOTION:
-                    if self.gamepad.get_axis(1) > 0.1:
-                        fontOffsetX = fontOffsetX + 20
-                    elif self.gamepad.get_axis(1) < -0.1:
-                        fontOffsetX = fontOffsetX - 20
-                    elif self.gamepad.get_axis(0) > 0.1:
-                        fontOffsetY = fontOffsetY - 20
-                    elif self.gamepad.get_axis(0) < -0.1:
-                        fontOffsetY = fontOffsetY + 20
-                elif event.type == pygame.JOYBUTTONDOWN:
-                    if self.gamepad.get_button(4):
-                        fontSize = int(fontSize/1.1)
-                    if self.gamepad.get_button(5):
-                        fontSize = int(fontSize*1.1)
-                    if self.gamepad.get_button(4):
-                        fontSize = int(fontSize/1.1)
-                    if self.gamepad.get_button(5):
-                        fontSize = int(fontSize*1.1)
-                    if self.gamepad.get_button(3):
-                        if opt < len(displaylist)-1:
-                            opt = opt+1
-                        else:
-                            opt = 0
-                        if opt <= 3:
-                            bgcolor = self.black
-                            fontcolor = self.white
-                        else:
-                            bgcolor = self.white
-                            fontcolor = self.black
-                    if self.gamepad.get_button(8):
-                        run = False
+            if self.gamepadpresent:
+                g = self.gamepad
+                for event in pygame.event.get():
+                    if event.type == pygame.JOYBUTTONDOWN:
+                        if g.get_button(9):
+                            if editMode == False:
+                                editMode = True
+                            else:
+                                dictdata = [fontOffsetX, fontOffsetY, 
+                                            fontSize, opt, bgcolor, fontcolor]
+                                self.saveJSON(dictdata)
+                                editMode = False
+                        if editMode == True:
+                            if g.get_button(4):
+                                fontSize = int(fontSize/1.1)
+                            if g.get_button(5):
+                                fontSize = int(fontSize*1.1)
+                            if g.get_button(4):
+                                fontSize = int(fontSize/1.1)
+                            if g.get_button(5):
+                                fontSize = int(fontSize*1.1)
+                            if g.get_button(3):
+                                if opt < len(displaylist)-1:
+                                    opt = opt+1
+                                else:
+                                    opt = 0
+                                if opt <= 3:
+                                    bgcolor = self.black
+                                    fontcolor = self.white
+                                else:
+                                    bgcolor = self.white
+                                    fontcolor = self.black
+                        if g.get_button(8):
+                            run = False
+                    if event.type == pygame.JOYAXISMOTION:
+                        if editMode == True:
+                            if g.get_axis(1) > 0.1:
+                                fontOffsetX = fontOffsetX + 20
+                            elif g.get_axis(1) < -0.1:
+                                fontOffsetX = fontOffsetX - 20
+                            elif g.get_axis(0) > 0.1:
+                                fontOffsetY = fontOffsetY - 20
+                            elif g.get_axis(0) < -0.1:
+                                fontOffsetY = fontOffsetY + 20
             self.screen.fill(bgcolor)
             font = pygame.font.Font(fontFile, fontSize)
             text = font.render(str((displaylist[opt])), True, fontcolor)
             rtext = pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
-            textRect.center = (self.size[0]//2+fontOffsetX,self.size[1]//2+fontOffsetY)
+            textRect.center = (self.size[0]//2+fontOffsetX,
+                                self.size[1]//2+fontOffsetY)
             self.screen.blit(rtext,textRect)
             pygame.display.update()
     
