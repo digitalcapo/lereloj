@@ -5,7 +5,6 @@ from datetime import datetime
 import pytz.reference
 import repubcal
 
-
 class lereloj:
     screen = None;
 
@@ -25,8 +24,8 @@ class lereloj:
         # Inits joystick support
         # Replace later with a full function that updates in the mainloop
         pygame.joystick.init()
-        gamepad = pygame.joystick.Joystick(0)
-        gamepad.init()
+        self.gamepad = pygame.joystick.Joystick(0)
+        self.gamepad.init()
         # Inits Font Support
         pygame.font.init()
         # Set display mode and display update
@@ -52,7 +51,7 @@ class lereloj:
 
     def leClock(self):
         """
-        :return: Republican Calendar and Decimal  Time according to local time zone
+        :return: Republican Calendar and Decimal Time according to local time zone
         :rtype: list
         # Using repubcal module from https://github.com/Nimlar/repubcal
         # Decimal time formula based on metric-time by Lakhan Mankani
@@ -73,11 +72,12 @@ class lereloj:
         nsfm = (now - midnight).total_seconds()
         # Remap normal seconds to metric seconds
         metricSeconds = nsfm / 0.864
+        milimetricseconds = int((metricSeconds - int(metricSeconds)) * 1000)
         # Remap clock from metric seconds
         hours = "{:02d}".format((int(metricSeconds / 10000)))
         minutes = "{:02d}".format(int(metricSeconds / 100) % 100)
         seconds = "{:02d}".format(int(metricSeconds % 100))
-        miliseconds = "{:03d}".format(int((metricSeconds - int(metricSeconds)) * 1000))
+        miliseconds = "{:03d}".format(milimetricseconds)
         leclock = [year,month,day,season,
                    hours,minutes,seconds,miliseconds]
         # Return a list with calendar and clock values
@@ -85,35 +85,55 @@ class lereloj:
 
     def leDisplay(self):
         """
-        Main Loop. Renders text and modifies position and scale using gamepad input
+        Main Loop. Renders text, with position and scale set by gamepad input
         """
         clock = pygame.time.Clock()
         fontFile = 'Digestive.otf'
         fontSize = 320
         fontOffsetX = 0
         fontOffsetY = 0
-        font = pygame.font.Font(fontFile, fontSize)
         opt = 0
         rotate = 90
         bgcolor = self.black
         fontcolor = self.white
-        #while True:
-        for x in range(0,5000):
+        run = True
+        while run == True:
             clock.tick(100)
             displaylist = self.leClock()
             for event in pygame.event.get():
-                if event.type == pygame.JOYBUTTONDOWN:
-                    if opt < len(displaylist)-1:
-                        opt = opt+1
-                    else:
-                        opt = 0
-                    if opt <= 3:
-                        bgcolor = self.black
-                        fontcolor = self.white
-                    else:
-                        bgcolor = self.white
-                        fontcolor = self.black
+                if event.type == pygame.JOYAXISMOTION:
+                    if self.gamepad.get_axis(1) > 0.1:
+                        fontOffsetX = fontOffsetX + 20
+                    elif self.gamepad.get_axis(1) < -0.1:
+                        fontOffsetX = fontOffsetX - 20
+                    elif self.gamepad.get_axis(0) > 0.1:
+                        fontOffsetY = fontOffsetY - 20
+                    elif self.gamepad.get_axis(0) < -0.1:
+                        fontOffsetY = fontOffsetY + 20
+                elif event.type == pygame.JOYBUTTONDOWN:
+                    if self.gamepad.get_button(4):
+                        fontSize = int(fontSize/1.1)
+                    if self.gamepad.get_button(5):
+                        fontSize = int(fontSize*1.1)
+                    if self.gamepad.get_button(4):
+                        fontSize = int(fontSize/1.1)
+                    if self.gamepad.get_button(5):
+                        fontSize = int(fontSize*1.1)
+                    if self.gamepad.get_button(3):
+                        if opt < len(displaylist)-1:
+                            opt = opt+1
+                        else:
+                            opt = 0
+                        if opt <= 3:
+                            bgcolor = self.black
+                            fontcolor = self.white
+                        else:
+                            bgcolor = self.white
+                            fontcolor = self.black
+                    if self.gamepad.get_button(8):
+                        run = False
             self.screen.fill(bgcolor)
+            font = pygame.font.Font(fontFile, fontSize)
             text = font.render(str((displaylist[opt])), True, fontcolor)
             rtext = pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
