@@ -119,6 +119,7 @@ class lereloj:
         run = True
         font = pygame.font.Font(fontFile, fontSize)
         editMode = False
+        antialias = True
         while run == True:
             clock.tick(100)
             displaylist = self.leClock()
@@ -136,6 +137,11 @@ class lereloj:
                                 editMode = False
                         if editMode == True:
                             font = pygame.font.Font(fontFile, fontSize)
+                            if g.get_button(2):
+                                if antialias == True:
+                                    antialias = False
+                                else:
+                                    antialias = True
                             if g.get_button(4):
                                 fontSize = int(fontSize/1.1)
                             if g.get_button(5):
@@ -168,7 +174,7 @@ class lereloj:
                             elif g.get_axis(0) < -0.1:
                                 fontOffsetY = fontOffsetY + 20
             self.screen.fill(bgcolor)
-            text = font.render(str((displaylist[opt])), True, fontcolor)
+            text = font.render(str((displaylist[opt])), antialias, fontcolor)
             rtext = pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
             textRect.center = (self.size[0]//2+fontOffsetX,
