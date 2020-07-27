@@ -175,7 +175,7 @@ class lereloj:
                                 fontOffsetY = fontOffsetY + 20
             self.screen.fill(bgcolor)
             text = font.render(str((displaylist[opt])), antialias, fontcolor)
-            rtext = pygame.transform.rotate(text, rotate)
+            rtext = text #pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
             textRect.center = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
