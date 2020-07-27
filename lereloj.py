@@ -20,7 +20,7 @@ class lereloj:
         self.gray = (125,125,125)
         # Initialize display and get screen resolution
         pygame.display.init()
-        self.size = ((960,540)) #(pygame.display.Info().current_w,
+        self.size = ((1280,720)) #(pygame.display.Info().current_w,
                     #pygame.display.Info().current_h)
         # Inits joystick support
         # Replace later with a full function that updates in the mainloop
@@ -175,7 +175,7 @@ class lereloj:
                                 fontOffsetY = fontOffsetY + 20
             self.screen.fill(bgcolor)
             text = font.render(str((displaylist[opt])), antialias, fontcolor)
-            rtext = text #pygame.transform.rotate(text, rotate)
+            rtext = pygame.transform.rotate(text, rotate)
             textRect = rtext.get_rect()
             textRect.center = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
