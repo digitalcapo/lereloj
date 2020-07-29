@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz.reference
 import repubcal
 import argo
-import ptext
+# import ptext
 
 class lereloj:
     screen = None;
