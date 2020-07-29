@@ -130,7 +130,7 @@ class lereloj:
         run = True
         editMode = False
         while run == True:
-            clock.tick(25)
+            clock.tick(60)
             displaylist = self.leClock()
             self.isGamepadConnected()
             if self.gamepadpresent:
