@@ -195,7 +195,7 @@ class lereloj:
             #rtext = pygame.transform.rotate(text, rotate)
             text = ptext.draw(selectedText, textPos,
                             fontname=fontFile, fontsize=fontSize,
-                            color=fontcolor, anchor=(0.0,0.0), angle=rotate, cache=False)
+                            color=fontcolor, anchor=(0.0,0.0), angle=rotate, cache=False, antialias=antialias)
             # textRect = rtext.get_rect()
             # textRect.center = (self.size[0]//2+fontOffsetX,
             #                     self.size[1]//2+fontOffsetY)
