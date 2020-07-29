@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz.reference
 import repubcal
 import argo
-# import ptext
+import ptext
 
 class lereloj:
     screen = None;
@@ -32,7 +32,7 @@ class lereloj:
         except:
             print("No Joystick present. Moving on.")
         # Inits Font Support
-        pygame.font.init()
+        #pygame.font.init()
         # Set display mode and display update
         self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
         self.screen.fill(self.black)
@@ -130,7 +130,7 @@ class lereloj:
         bgcolor = jsondata[4]
         fontcolor = jsondata[5]
         run = True
-        font = pygame.font.Font(fontFile, fontSize)
+        #font = pygame.font.Font(fontFile, fontSize)
         editMode = False
         antialias = True
         while run == True:
@@ -188,12 +188,18 @@ class lereloj:
                             elif g.get_axis(0) < -0.1:
                                 fontOffsetY = fontOffsetY + 20
             self.screen.fill(bgcolor)
-            text = font.render(str((displaylist[opt])), antialias, fontcolor)
-            rtext = pygame.transform.rotate(text, rotate)
-            textRect = rtext.get_rect()
-            textRect.center = (self.size[0]//2+fontOffsetX,
+            selectedText = str((displaylist[opt]))
+            textPos = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
-            self.screen.blit(rtext,textRect)
+            #text = font.render(str((displaylist[opt])), antialias, fontcolor)
+            #rtext = pygame.transform.rotate(text, rotate)
+            text = ptext.draw(selectedText, textPos,
+                            fontname=fontFile, fontsize=fontSize,
+                            color=fontcolor, anchor=(0.0,0.0), angle=rotate)
+            # textRect = rtext.get_rect()
+            # textRect.center = (self.size[0]//2+fontOffsetX,
+            #                     self.size[1]//2+fontOffsetY)
+            #self.screen.blit(text,textRect)
             pygame.display.update()
     
     def __del__(self):
