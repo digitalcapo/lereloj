@@ -130,11 +130,9 @@ class lereloj:
         bgcolor = jsondata[4]
         fontcolor = jsondata[5]
         run = True
-        #font = pygame.font.Font(fontFile, fontSize)
         editMode = False
-        antialias = True
         while run == True:
-            clock.tick(50)
+            clock.tick(25)
             displaylist = self.leClock()
             self.isGamepadConnected()
             if self.gamepadpresent:
@@ -152,10 +150,9 @@ class lereloj:
                         if editMode == True:
                             font = pygame.font.Font(fontFile, fontSize)
                             if g.get_button(2):
-                                if antialias == True:
-                                    antialias = False
-                                else:
-                                    antialias = True
+                                fontOffsetX=0
+                                fontOffsetY=0
+                                fontSize=200
                             if g.get_button(4):
                                 fontSize = int(fontSize/1.1)
                             if g.get_button(5):
@@ -191,11 +188,10 @@ class lereloj:
             selectedText = str((displaylist[opt]))
             textPos = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
-            #text = font.render(str((displaylist[opt])), antialias, fontcolor)
-            #rtext = pygame.transform.rotate(text, rotate)
             text = ptext.draw(selectedText, textPos,
-                            fontname=fontFile, fontsize=fontSize,
-                            color=fontcolor, anchor=(0.0,0.0), angle=rotate, cache=False, antialias=antialias)
+                            fontname=fontFile, fontsize=fontSize, align="center",
+                            color=fontcolor, anchor=(0.5,0.5),
+                            angle=rotate, cache=False)
             # textRect = rtext.get_rect()
             # textRect.center = (self.size[0]//2+fontOffsetX,
             #                     self.size[1]//2+fontOffsetY)
