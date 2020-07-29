@@ -31,8 +31,6 @@ class lereloj:
             self.isGamepadConnected()
         except:
             print("No Joystick present. Moving on.")
-        # Inits Font Support
-        #pygame.font.init()
         # Set display mode and display update
         self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
         self.screen.fill(self.black)
@@ -192,14 +190,10 @@ class lereloj:
                             fontname=fontFile, fontsize=fontSize, align="center",
                             color=fontcolor, anchor=(0.5,0.5),
                             angle=rotate, cache=False)
-            # textRect = rtext.get_rect()
-            # textRect.center = (self.size[0]//2+fontOffsetX,
-            #                     self.size[1]//2+fontOffsetY)
-            #self.screen.blit(text,textRect)
             pygame.display.update()
     
     def __del__(self):
-        "Destructor to make sure pygame shuts down"
+        '''Destructor to make sure pygame shuts down'''
 
 if __name__ == '__main__':
     lereloj = lereloj()
