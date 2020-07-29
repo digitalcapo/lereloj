@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz.reference
 import repubcal
 import argo
+import ptext
 
 class lereloj:
     screen = None;
@@ -20,16 +21,14 @@ class lereloj:
         self.gray = (125,125,125)
         # Initialize display and get screen resolution
         pygame.display.init()
-        self.size = ((1280,720)) #(pygame.display.Info().current_w,
-                    #pygame.display.Info().current_h)
+        self.size = (pygame.display.Info().current_w,
+                    pygame.display.Info().current_h)
         # Inits joystick support
         # Replace later with a full function that updates in the mainloop
         self.gamepadpresent = False
+        self.gamepad = None
         try:
-            pygame.joystick.init()
-            self.gamepad = pygame.joystick.Joystick(0)
-            self.gamepad.init()
-            self.gamepadpresent = True
+            self.isGamepadConnected()
         except:
             print("No Joystick present. Moving on.")
         # Inits Font Support
@@ -39,6 +38,20 @@ class lereloj:
         self.screen.fill(self.black)
         pygame.mouse.set_visible(False)
         pygame.display.update()
+
+    def isGamepadConnected(self):
+        if self.gamepadpresent == False:
+            pygame.joystick.quit()
+            pygame.joystick.init()
+            joycount = pygame.joystick.get_count()
+            if joycount > 0:
+                self.gamepad = pygame.joystick.Joystick(0)
+                self.gamepad.init()
+                self.gamepadpresent = True
+            else:
+                if self.gamepadpresent == True:
+                    self.gamepadpresent = False
+
 
     def getCurrentSeason(self, date):
         """
@@ -123,6 +136,7 @@ class lereloj:
         while run == True:
             clock.tick(100)
             displaylist = self.leClock()
+            self.isGamepadConnected()
             if self.gamepadpresent:
                 g = self.gamepad
                 for event in pygame.event.get():
