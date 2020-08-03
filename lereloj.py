@@ -6,6 +6,7 @@ import pytz.reference
 import repubcal
 import argo
 import ptext
+from subprocess import call
 
 class lereloj:
     screen = None;
@@ -124,11 +125,12 @@ class lereloj:
         fontOffsetY = jsondata[1]
         fontSize = jsondata[2]
         opt = jsondata[3]
-        rotate = 90
         bgcolor = jsondata[4]
         fontcolor = jsondata[5]
+        rotate = jsondata[6]
         run = True
         editMode = False
+        direction = 1
         while run == True:
             clock.tick(60)
             displaylist = self.leClock()
@@ -142,7 +144,7 @@ class lereloj:
                                 editMode = True
                             else:
                                 dictdata = [fontOffsetX, fontOffsetY, 
-                                            fontSize, opt, bgcolor, fontcolor]
+                                            fontSize, opt, bgcolor, fontcolor, rotate]
                                 self.saveJSON(dictdata)
                                 editMode = False
                         if editMode == True:
@@ -170,18 +172,27 @@ class lereloj:
                                 else:
                                     bgcolor = self.white
                                     fontcolor = self.black
+                            if g.get_button(1):
+                                if rotate == 90:
+                                    rotate = -90
+                                    direction = -1
+                                else:
+                                    rotate = 90
+                                    direction = 1
                         if g.get_button(8):
                             run = False
+                            call("sudo nohup shutdown -h now", shell=True)
                     if event.type == pygame.JOYAXISMOTION:
                         if editMode == True:
+                            offsetN = 20 * direction
                             if g.get_axis(1) > 0.1:
-                                fontOffsetX = fontOffsetX + 20
+                                fontOffsetX = fontOffsetX + offsetN
                             elif g.get_axis(1) < -0.1:
-                                fontOffsetX = fontOffsetX - 20
+                                fontOffsetX = fontOffsetX - offsetN
                             elif g.get_axis(0) > 0.1:
-                                fontOffsetY = fontOffsetY - 20
+                                fontOffsetY = fontOffsetY - offsetN
                             elif g.get_axis(0) < -0.1:
-                                fontOffsetY = fontOffsetY + 20
+                                fontOffsetY = fontOffsetY + offsetN
             self.screen.fill(bgcolor)
             selectedText = str((displaylist[opt]))
             textPos = (self.size[0]//2+fontOffsetX,
