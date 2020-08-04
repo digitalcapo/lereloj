@@ -6,6 +6,7 @@ import pytz.reference
 import repubcal
 import argo
 import ptext
+import random
 from subprocess import call
 
 class lereloj:
@@ -114,6 +115,10 @@ class lereloj:
         # Return a list with calendar and clock values
         return leclock
 
+    def glitcher(self):
+        imageFile = 'glitches/glitch_01_'
+        return imageFile+("{:02d}".format(random.randint(1,4)))+'.png'
+
     def leDisplay(self):
         """
         Main Loop. Renders text, with position and scale set by gamepad input
@@ -131,9 +136,11 @@ class lereloj:
         run = True
         editMode = False
         direction = 1
+        gimage = pygame.image.load(self.glitcher()).convert_alpha()
         while run == True:
             clock.tick(60)
             displaylist = self.leClock()
+            gimage = pygame.image.load(self.glitcher()).convert_alpha()
             self.isGamepadConnected()
             if self.gamepadpresent:
                 g = self.gamepad
@@ -194,6 +201,7 @@ class lereloj:
                             elif g.get_axis(0) < -0.1:
                                 fontOffsetY = fontOffsetY + offsetN
             self.screen.fill(bgcolor)
+            grect = pygame.rect.Rect(0,0, self.size[0], self.size[1])
             selectedText = str((displaylist[opt]))
             textPos = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
@@ -201,6 +209,7 @@ class lereloj:
                             fontname=fontFile, fontsize=fontSize, align="center",
                             color=fontcolor, anchor=(0.5,0.5),
                             angle=rotate, cache=False)
+            self.screen.blit(gimage, grect)
             pygame.display.update()
     
     def __del__(self):
