@@ -23,8 +23,9 @@ class lereloj:
         self.gray = (125,125,125)
         # Initialize display and get screen resolution
         pygame.display.init()
-        self.size = (pygame.display.Info().current_w,
-                    pygame.display.Info().current_h)
+        self.size = (1920, 1080)
+        # self.size = (pygame.display.Info().current_w,
+        #             pygame.display.Info().current_h)
         # Inits joystick support
         # Replace later with a full function that updates in the mainloop
         self.gamepadpresent = False
@@ -115,9 +116,12 @@ class lereloj:
         # Return a list with calendar and clock values
         return leclock
 
-    def glitcher(self):
-        imageFile = 'glitches/glitch_01_'
-        return imageFile+("{:02d}".format(random.randint(1,4)))+'.png'
+    def glitcher(self, iter):
+        imageFile = "glitches/{:01d}.png".format(iter)
+        if os.path.exists(imageFile):
+            return imageFile
+        else:
+            return None
 
     def leDisplay(self):
         """
@@ -136,11 +140,14 @@ class lereloj:
         run = True
         editMode = False
         direction = 1
-        gimage = pygame.image.load(self.glitcher()).convert_alpha()
+        glitch = True
+        gpreload = self.glitcher(opt)
+        gimage = pygame.image.load(gpreload).convert_alpha()
         while run == True:
             clock.tick(60)
+            gpreload = self.glitcher(opt)
+            gimage = pygame.image.load(gpreload).convert_alpha()
             displaylist = self.leClock()
-            gimage = pygame.image.load(self.glitcher()).convert_alpha()
             self.isGamepadConnected()
             if self.gamepadpresent:
                 g = self.gamepad
@@ -205,11 +212,16 @@ class lereloj:
             selectedText = str((displaylist[opt]))
             textPos = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
+            if opt == 2 or opt == 3 or opt == 4 or opt == 5:
+                glitch = True
+            else:
+                glitch = False
+            if glitch == True:
+                self.screen.blit(gimage, grect)
             text = ptext.draw(selectedText, textPos,
                             fontname=fontFile, fontsize=fontSize, align="center",
                             color=fontcolor, anchor=(0.5,0.5),
                             angle=rotate, cache=False)
-            self.screen.blit(gimage, grect)
             pygame.display.update()
     
     def __del__(self):
