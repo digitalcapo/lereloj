@@ -23,9 +23,9 @@ class lereloj:
         self.gray = (125,125,125)
         # Initialize display and get screen resolution
         pygame.display.init()
-        self.size = (1920, 1080)
-        # self.size = (pygame.display.Info().current_w,
-        #             pygame.display.Info().current_h)
+#        self.size = (1920, 1080)
+        self.size = (pygame.display.Info().current_w,
+                    pygame.display.Info().current_h)
         # Inits joystick support
         # Replace later with a full function that updates in the mainloop
         self.gamepadpresent = False
