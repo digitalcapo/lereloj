@@ -23,13 +23,12 @@ class lereloj:
         self.gray = (125,125,125)
         # Initialize display and get screen resolution
         pygame.display.init()
-#        self.size = (1920, 1080)
         self.size = (pygame.display.Info().current_w,
                     pygame.display.Info().current_h)
         # Inits joystick support
-        # Replace later with a full function that updates in the mainloop
         self.gamepadpresent = False
         self.gamepad = None
+        # Checks if initally connected to the pi
         try:
             self.isGamepadConnected()
         except:
@@ -41,6 +40,9 @@ class lereloj:
         pygame.display.update()
 
     def isGamepadConnected(self):
+        """
+        Checks if gamepad is connected and initializes pygame.joystick
+        """
         if self.gamepadpresent == False:
             pygame.joystick.quit()
             pygame.joystick.init()
@@ -117,6 +119,10 @@ class lereloj:
         return leclock
 
     def glitcher(self, iter):
+        """
+        Last minute update:
+        Add .png texture with alpha over the main screen depending on option
+        """
         imageFile = "glitches/{:01d}.png".format(iter)
         if os.path.exists(imageFile):
             return imageFile
@@ -126,28 +132,43 @@ class lereloj:
     def leDisplay(self):
         """
         Main Loop. Renders text, with position and scale set by gamepad input
+        Brings last saved data from a JSON file.
         """
         clock = pygame.time.Clock()
         jsondata = self.getJSON()
         fontFile = 'Digestive.otf'
+        # Load settings from JSON
+        # Font Settings
         fontOffsetX = jsondata[0]
         fontOffsetY = jsondata[1]
         fontSize = jsondata[2]
+        # Option changes display type (year,month,day,etc)
         opt = jsondata[3]
         bgcolor = jsondata[4]
         fontcolor = jsondata[5]
+        # Rotation
         rotate = jsondata[6]
+        # killSwitch variable
         run = True
+        # This enables/disables option selection
         editMode = False
+        # Initial Direction (based on rotation)
         direction = 1
+        # Glitch managment. Not all screens have a glitch.
         glitch = True
+        # Preload image file to draw faster on blip()
         gpreload = self.glitcher(opt)
         gimage = pygame.image.load(gpreload).convert_alpha()
+        # Here everything goes a bit crazy, but it works
         while run == True:
             clock.tick(60)
+            # Checks glitch again
             gpreload = self.glitcher(opt)
+            # Force alpha premult
             gimage = pygame.image.load(gpreload).convert_alpha()
+            # Execute clock / calendar code, store in list.
             displaylist = self.leClock()
+            # Check gamepad connected. If so, listen to inputs.
             self.isGamepadConnected()
             if self.gamepadpresent:
                 g = self.gamepad
