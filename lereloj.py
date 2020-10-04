@@ -118,17 +118,6 @@ class lereloj:
         # Return a list with calendar and clock values
         return leclock
 
-    def glitcher(self, iter):
-        """
-        Last minute update:
-        Add .png texture with alpha over the main screen depending on option
-        """
-        imageFile = "glitches/{:01d}.png".format(iter)
-        if os.path.exists(imageFile):
-            return imageFile
-        else:
-            return None
-
     def leDisplay(self):
         """
         Main Loop. Renders text, with position and scale set by gamepad input
@@ -154,18 +143,9 @@ class lereloj:
         editMode = False
         # Initial Direction (based on rotation)
         direction = 1
-        # Glitch managment. Not all screens have a glitch.
-        glitch = True
-        # Preload image file to draw faster on blip()
-        gpreload = self.glitcher(opt)
-        gimage = pygame.image.load(gpreload).convert_alpha()
         # Here everything goes a bit crazy, but it works
         while run == True:
             clock.tick(60)
-            # Checks glitch again
-            gpreload = self.glitcher(opt)
-            # Force alpha premult
-            gimage = pygame.image.load(gpreload).convert_alpha()
             # Execute clock / calendar code, store in list.
             displaylist = self.leClock()
             # Check gamepad connected. If so, listen to inputs.
@@ -233,12 +213,6 @@ class lereloj:
             selectedText = str((displaylist[opt]))
             textPos = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
-            if opt == 2 or opt == 3 or opt == 4 or opt == 5:
-                glitch = True
-            else:
-                glitch = False
-            if glitch == True:
-                self.screen.blit(gimage, grect)
             text = ptext.draw(selectedText, textPos,
                             fontname=fontFile, fontsize=fontSize, align="center",
                             color=fontcolor, anchor=(0.5,0.5),
