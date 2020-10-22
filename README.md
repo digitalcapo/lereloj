@@ -13,6 +13,8 @@ The goal was simple, the task at hand... not so much:
 
 8 screens, 4 displaying the current year, month, day, season in the [French Republican Calendar](https://en.wikipedia.org/wiki/French_Republican_calendar) format.
 
+![](https://i.imgur.com/1GpZPFj.jpg?2)
+
 The other 4 would display hours, minutes, seconds and milliseconds.
 
 ![](https://i.imgur.com/oj0cpmd.jpg)
@@ -47,7 +49,11 @@ The only bump in the road was... I forgot to order an SD card. Since I had all m
 
 After installing the base OS, next dat I had some first tests on Decimal time, based on this repo: [repo]
 
-<img src="https://i.imgur.com/R6iBRxF.png" width="650">
+
+Console      |  First Script
+:-------------------------:|:-------------------------:
+<img src="https://i.imgur.com/R6iBRxF.png" width="650"> |  <img src="https://i.imgur.com/HJYoLup.jpg" width="650">
+
 
 At first the font was displayed via default pygame font library, but got later replaced by ptext, really handy features to handle size, position and antialiasing: [repo]
 
@@ -58,12 +64,22 @@ Next step was Republican Calendar; this one was simpler to implement thanks to r
 
 Two weeks flew by and the code was almost done. We had to wait for a couple of weeks for staff to return from holidays, so we took a break from the project.
 
+[video @ imgur]("https://imgur.com/gI652pz")
+
 Then, the moment of truth: deploying 8 raspberry pi remotely. Kim Gipouloux was a great proxy at Marian Goodman's, she assembled and burned all 8 images onto the SD cards and checked each one.
+
+<img src="https://i.imgur.com/f1qrhAI.jpg" width="650">
+
+8x Rasbperry Pi Zero W        |  2x USB Joystick + 8x Power Supply
+:-------------------------:|:-------------------------:
+![](https://i.imgur.com/wh6xVZD.jpg) |  ![](https://i.imgur.com/UApnwzT.jpg)
 
 We only had to apply a small patch a week before opening that contained some texture glitch overlay in a set of particular screens.
 
+(https://i.imgur.com/OtYJRwv.png)
 
-It was an incredible fun project, but I'm also honored to be a part of an amazing crew of humans that carried this work throughout completion. Special thanks to Adrian Villar Rojas for his trust and continuos support along the process.
+It was an incredible fun project, but most importantly I'm feel honored to be a part of an amazing crew of humans that carried this work throughout completion. 
+Special thanks to Adrian Villar Rojas for his trust and continuos support along the process.
 
 If you're running this on your pi and/or you have any questions don't hesitate to send an email hola@capo.digital 
 
@@ -95,9 +111,26 @@ ephem
 
 ## Resources
 
-- Websites from trello 
+Useful links that helped me complete this project:
 
-## Credits
-- repubcal
-- decimaltime
-- ptext
+https://gamepad-tester.com/
+
+https://stenobot.wordpress.com/2018/01/03/run-a-raspberry-pi-in-standalone-kiosk-mode
+
+https://medium.com/@andreas.schallwig/how-to-make-your-raspberry-pi-file-system-read-only-raspbian-stretch-80c0f7be7353
+
+https://learn.adafruit.com/pi-video-output-using-pygame?view=all
+
+https://www.raspberrypi.org/forums/viewtopic.php?t=171109
+
+https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/
+
+https://www.raspberrypi.org/magpi-issues/Essentials_Games_v1.pdf
+
+https://hackaday.io/project/20156-raspberry-pi-zero-w-desk-clock/details
+
+https://www.raspberrypi.org/documentation/installation/installing-images/README.md
+
+https://www.raspberrypi.org/downloads/noobs/
+
+https://www.pibakery.org/about.html
