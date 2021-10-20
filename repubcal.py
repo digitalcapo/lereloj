@@ -575,7 +575,7 @@ class RDate(datetime.date):
                 push(char)
 
 
-        newformat = str("".join(newformat).encode('utf-8'))
+        newformat = "".join(newformat)
         if self.year < 1900:
             return newformat
         else:
