@@ -94,9 +94,9 @@ class lereloj:
         # Here everything goes a bit crazy, but it works
         while run == True:
             clock.tick(60)
-            # for event in pygame.event.get():
-            #     if (event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE)):
-            #         pygame.quit()
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE)):
+                    pygame.quit()
             # Execute clock / calendar code, store in list.
             displaylist = self.leClock()
             #
@@ -120,7 +120,7 @@ class lereloj:
                 text = ptext.draw(selectedText, textPos,
                                 fontname=fontFile, fontsize=fontSize, align=settings[each]["align"],
                                 color=self.white, anchor=settings[each]["anchor"],
-                                angle=settings[each]["angle"], cache=False)
+                                angle=settings[each]["angle"], cache=True)
             pygame.display.update()
               
     def __del__(self):
