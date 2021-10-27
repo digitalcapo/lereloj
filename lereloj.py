@@ -112,15 +112,15 @@ class lereloj:
                         {"size":2.5,"angle":0,"posx":1.22,"posy":2,'align':"center","anchor":(1,.75)},
                         {"size":2.5,"angle":0,"posx":.99,"posy":2,'align':"center","anchor":(1,0.75)},
                         {"size":4.6,"angle":180,"posx":2,"posy":1.15,'align':"right","anchor":(.5,0.5)}]
-            for each in options:
-                selectedText = str((displaylist[each]))
-                fontSize =(self.size[0]//settings[each]["size"])
-                textPos = (self.size[0]//settings[each]["posx"],
-                                    self.size[1]//settings[each]["posy"])
-                text = ptext.draw(selectedText, textPos,
-                                fontname=fontFile, fontsize=fontSize, align=settings[each]["align"],
-                                color=self.white, anchor=settings[each]["anchor"],
-                                angle=settings[each]["angle"], cache=False)
+            # for each in options:
+            #     selectedText = str((displaylist[each]))
+            #     fontSize =(self.size[0]//settings[each]["size"])
+            #     textPos = (self.size[0]//settings[each]["posx"],
+            #                         self.size[1]//settings[each]["posy"])
+            #     text = ptext.draw(selectedText, textPos,
+            #                     fontname=fontFile, fontsize=fontSize, align=settings[each]["align"],
+            #                     color=self.white, anchor=settings[each]["anchor"],
+            #                     angle=settings[each]["angle"], cache=False)
 
             pygame.display.update()
               
