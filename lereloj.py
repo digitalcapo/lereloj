@@ -59,7 +59,7 @@ class lereloj:
         year = int("{:%ry}".format(date))+71
         month = "{:%rB}".format(date)
         day = str("{:%rA}".format(date))
-        season = str(self.getCurrentSeason(date))
+        season = str(self.getCurrentSeason(date)).encode('utf-8')
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
         now = datetime.now(ltz)
