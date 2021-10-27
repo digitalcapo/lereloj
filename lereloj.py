@@ -58,7 +58,7 @@ class lereloj:
         # Remap to Republican Calendar
         year = str(int("{:%ry}".format(date))+71)
         month = "{:%rB}".format(date)
-        day = "{:%rA}".format(date)
+        day = str("{:%rA}".format(date))
         season = str(self.getCurrentSeason(date))
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
