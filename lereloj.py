@@ -19,42 +19,16 @@ class lereloj:
         # Let's set some variables first!
         # Define color pallete for further use
         self.white = (255,255,255)
-        self.black = (0,0,0)
+        self.black = (0,0,255)
         self.gray = (125,125,125)
         # Initialize display and get screen resolution
         pygame.display.init()
         self.size = (pygame.display.Info().current_w,
                     pygame.display.Info().current_h)
-        # Inits joystick support
-        self.gamepadpresent = False
-        self.gamepad = None
-        # Checks if initally connected to the pi
-        try:
-            self.isGamepadConnected()
-        except:
-            print("No Joystick present. Moving on.")
-        # Set display mode and display update
         self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
         self.screen.fill(self.black)
         pygame.mouse.set_visible(False)
         pygame.display.update()
-
-    def isGamepadConnected(self):
-        """
-        Checks if gamepad is connected and initializes pygame.joystick
-        """
-        if self.gamepadpresent == False:
-            pygame.joystick.quit()
-            pygame.joystick.init()
-            joycount = pygame.joystick.get_count()
-            if joycount > 0:
-                self.gamepad = pygame.joystick.Joystick(0)
-                self.gamepad.init()
-                self.gamepadpresent = True
-            else:
-                if self.gamepadpresent == True:
-                    self.gamepadpresent = False
-
 
     def getCurrentSeason(self, date):
         """
@@ -71,19 +45,6 @@ class lereloj:
         elif nmonth > 9 and nmonth <= 12:
             return seasons[3]
 
-    def getJSON(self):
-        jsonFile = './config.json'
-        data = []
-        data = argo.JSON.bringThis(self,jsonFile)
-        return data
-
-    def saveJSON(self,data):
-        jsonFile = './config.json'
-        try:
-            argo.JSON.saveThis(self,data,jsonFile)
-        except Exception as e:
-            print("NOPE because: {0}".format(e))
-
     def leClock(self):
         """
         :return: Republican Calendar & Decimal Time in local time zone
@@ -93,9 +54,9 @@ class lereloj:
         # https://pypi.org/project/metric-time/
         """
         # Get current date
-        date = repubcal.RDate.today()
+        date = repubcal.RDate(2021,2,10) # .today()
         # Remap to Republican Calendar
-        year = "{:%ry}".format(date)
+        year = int("{:%ry}".format(date))+71
         month = "{:%rB}".format(date)
         day = "{:%rA}".format(date)
         season = str(self.getCurrentSeason(date))
@@ -124,20 +85,7 @@ class lereloj:
         Brings last saved data from a JSON file.
         """
         clock = pygame.time.Clock()
-        jsondata = self.getJSON()
         fontFile = 'Digestive.otf'
-        # Load settings from JSON
-        # Font Settings
-        fontOffsetX = jsondata[0]
-        fontOffsetY = jsondata[1]
-        fontSize = jsondata[2]
-        # Option changes display type (year,month,day,etc)
-        opt = jsondata[3]
-        bgcolor = jsondata[4]
-        fontcolor = jsondata[5]
-        # Rotation
-        rotate = jsondata[6]
-        # killSwitch variable
         run = True
         # This enables/disables option selection
         editMode = False
@@ -146,79 +94,35 @@ class lereloj:
         # Here everything goes a bit crazy, but it works
         while run == True:
             clock.tick(60)
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE)):
+                    pygame.quit()
             # Execute clock / calendar code, store in list.
             displaylist = self.leClock()
-            # Check gamepad connected. If so, listen to inputs.
-            self.isGamepadConnected()
-            if self.gamepadpresent:
-                g = self.gamepad
-                for event in pygame.event.get():
-                    if event.type == pygame.JOYBUTTONDOWN:
-                        if g.get_button(9):
-                            if editMode == False:
-                                editMode = True
-                            else:
-                                dictdata = [fontOffsetX, fontOffsetY, 
-                                            fontSize, opt, bgcolor, fontcolor, rotate]
-                                self.saveJSON(dictdata)
-                                editMode = False
-                        if editMode == True:
-                            font = pygame.font.Font(fontFile, fontSize)
-                            if g.get_button(2):
-                                fontOffsetX=0
-                                fontOffsetY=0
-                                fontSize=200
-                            if g.get_button(4):
-                                fontSize = int(fontSize/1.1)
-                            if g.get_button(5):
-                                fontSize = int(fontSize*1.1)
-                            if g.get_button(4):
-                                fontSize = int(fontSize/1.1)
-                            if g.get_button(5):
-                                fontSize = int(fontSize*1.1)
-                            if g.get_button(3):
-                                if opt < len(displaylist)-1:
-                                    opt = opt+1
-                                else:
-                                    opt = 0
-                                if opt <= 3:
-                                    bgcolor = self.black
-                                    fontcolor = self.white
-                                else:
-                                    bgcolor = self.white
-                                    fontcolor = self.black
-                            if g.get_button(1):
-                                if rotate == 90:
-                                    rotate = -90
-                                    direction = -1
-                                else:
-                                    rotate = 90
-                                    direction = 1
-                        if g.get_button(8):
-                            run = False
-                            call("sudo nohup shutdown -h now", shell=True)
-                    if event.type == pygame.JOYAXISMOTION:
-                        if editMode == True:
-                            offsetN = 20 * direction
-                            if g.get_axis(1) > 0.1:
-                                fontOffsetX = fontOffsetX + offsetN
-                            elif g.get_axis(1) < -0.1:
-                                fontOffsetX = fontOffsetX - offsetN
-                            elif g.get_axis(0) > 0.1:
-                                fontOffsetY = fontOffsetY - offsetN
-                            elif g.get_axis(0) < -0.1:
-                                fontOffsetY = fontOffsetY + offsetN
-            self.screen.fill(bgcolor)
+            #
+            font = pygame.font.Font(fontFile, 200)
+            self.screen.fill(self.black)
             grect = pygame.rect.Rect(0,0, self.size[0], self.size[1])
-            selectedText = str((displaylist[opt]))
-            textPos = (self.size[0]//2+fontOffsetX,
-                                self.size[1]//2+fontOffsetY)
-            text = ptext.draw(selectedText, textPos,
-                            fontname=fontFile, fontsize=fontSize, align="center",
-                            color=fontcolor, anchor=(0.5,0.5),
-                            angle=rotate, cache=False)
+            options = [0,1,2,3,4,5,6,7]
+            settings = [{"size":3,"angle":90,"posx":2,"posy":2,'align':"center","anchor":(0.5,0.5)},
+                        {"size":5,"angle":0,"posx":1,"posy":.97,'align':"left","anchor":(1,1)},
+                        {"size":4,"angle":180,"posx":2,"posy":1.1,'align':"center","anchor":(-.5,0)},
+                        {"size":5,"angle":0,"posx":2,"posy":3.1,'align':"center","anchor":(0.5,1)},
+                        {"size":2.5,"angle":90,"posx":3.3,"posy":3,'align':"left","anchor":(.4,.75)},
+                        {"size":2.5,"angle":0,"posx":1.22,"posy":2,'align':"center","anchor":(1,.75)},
+                        {"size":2.5,"angle":0,"posx":.99,"posy":2,'align':"center","anchor":(1,0.75)},
+                        {"size":4.6,"angle":180,"posx":2,"posy":1.15,'align':"right","anchor":(.5,0.5)}]
+            for each in options:
+                selectedText = str((displaylist[each]))
+                fontSize =(self.size[0]//settings[each]["size"])
+                textPos = (self.size[0]//settings[each]["posx"],
+                                    self.size[1]//settings[each]["posy"])
+                text = ptext.draw(selectedText, textPos,
+                                fontname=fontFile, fontsize=fontSize, align=settings[each]["align"],
+                                color=self.white, anchor=settings[each]["anchor"],
+                                angle=settings[each]["angle"], cache=False)
             pygame.display.update()
-    
+              
     def __del__(self):
         '''Destructor to make sure pygame shuts down'''
 
