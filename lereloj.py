@@ -54,9 +54,9 @@ class lereloj:
         # https://pypi.org/project/metric-time/
         """
         # Get current date
-        date = repubcal.RDate(2021,2,10) # .today()
+        date = repubcal.RDate.today()
         # Remap to Republican Calendar
-        year = int("{:%ry}".format(date))+71
+        year = str(int("{:%ry}".format(date))+71)
         month = "{:%rB}".format(date)
         day = "{:%rA}".format(date)
         season = str(self.getCurrentSeason(date))
