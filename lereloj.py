@@ -59,7 +59,7 @@ class lereloj:
         year = int("{:%ry}".format(date))+71
         month = "{:%rB}".format(date)
         day = str("{:%rA}".format(date))
-        season = str(self.getCurrentSeason(date)).encode('utf-8')
+        season = str(self.getCurrentSeason(date))
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
         now = datetime.now(ltz)
@@ -103,7 +103,7 @@ class lereloj:
             font = pygame.font.Font(fontFile, 200)
             self.screen.fill(self.black)
             grect = pygame.rect.Rect(0,0, self.size[0], self.size[1])
-            options = [0]
+            options = [0,1,2,3,4,5,6,7]
             settings = [{"size":3,"angle":90,"posx":2,"posy":2,'align':"center","anchor":(0.5,0.5)},
                         {"size":5,"angle":0,"posx":1,"posy":.97,'align':"left","anchor":(1,1)},
                         {"size":4,"angle":180,"posx":2,"posy":1.1,'align':"center","anchor":(-.5,0)},
@@ -112,15 +112,15 @@ class lereloj:
                         {"size":2.5,"angle":0,"posx":1.22,"posy":2,'align':"center","anchor":(1,.75)},
                         {"size":2.5,"angle":0,"posx":.99,"posy":2,'align':"center","anchor":(1,0.75)},
                         {"size":4.6,"angle":180,"posx":2,"posy":1.15,'align':"right","anchor":(.5,0.5)}]
-            # for each in options:
-            #     selectedText = str((displaylist[each]))
-            #     fontSize =(self.size[0]//settings[each]["size"])
-            #     textPos = (self.size[0]//settings[each]["posx"],
-            #                         self.size[1]//settings[each]["posy"])
-            #     text = ptext.draw(selectedText, textPos,
-            #                     fontname=fontFile, fontsize=fontSize, align=settings[each]["align"],
-            #                     color=self.white, anchor=settings[each]["anchor"],
-            #                     angle=settings[each]["angle"], cache=False)
+            for each in options:
+                selectedText = str((displaylist[each]))
+                fontSize =(self.size[0]//settings[each]["size"])
+                textPos = (self.size[0]//settings[each]["posx"],
+                                    self.size[1]//settings[each]["posy"])
+                text = ptext.draw(selectedText, textPos,
+                                fontname=fontFile, fontsize=fontSize, align=settings[each]["align"],
+                                color=self.white, anchor=settings[each]["anchor"],
+                                angle=settings[each]["angle"], cache=False)
 
             pygame.display.update()
               
