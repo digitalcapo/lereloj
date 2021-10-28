@@ -104,7 +104,7 @@ class lereloj:
             self.screen.fill(self.black)
             grect = pygame.rect.Rect(0,0, self.size[0], self.size[1])
             options = [0,1,2,3,4,5,6,7]
-            settings = [{"size":3,"angle":180,"posx":2,"posy":2,'align':"center","anchor":(0.5,0.5)},
+            settings = [{"size":3,"angle":270,"posx":2,"posy":2,'align':"center","anchor":(0.5,0.5)},
                         {"size":5,"angle":0,"posx":1,"posy":.97,'align':"left","anchor":(1,1)},
                         {"size":4,"angle":180,"posx":2,"posy":1.1,'align':"center","anchor":(-.5,0)},
                         {"size":5,"angle":0,"posx":2,"posy":3.1,'align':"center","anchor":(0.5,1)},
