@@ -56,7 +56,7 @@ class lereloj:
         # Get current date
         date = repubcal.RDate.today()
         # Remap to Republican Calendar
-        year = int("{:%ry}".format(date))+71
+        year = int("{:%ry}".format(date))
         month = "{:%rB}".format(date)
         day = str("{:%rA}".format(date))
         season = str(self.getCurrentSeason(date))
