@@ -60,7 +60,7 @@ class lereloj:
         """
         Checks month number and returns current season
         """
-        nmonth = int("{:%rm}".format(date))
+        nmonth = int("{:%rm}".format(date).encode('utf-8'))
         seasons = ["Automne","Hiver","Printemps","Été"]
         if nmonth >= 1 and nmonth <= 3:
             return seasons[0]
@@ -95,9 +95,9 @@ class lereloj:
         # Get current date
         date = repubcal.RDate.today()
         # Remap to Republican Calendar
-        year = "{:%ry}".format(date)
+        year = int("{:%ry}".format(date))
         month = "{:%rB}".format(date)
-        day = "{:%rA}".format(date)
+        day = str("{:%rA}".format(date))
         season = str(self.getCurrentSeason(date))
         # Get local datetime from timezone
         ltz = pytz.reference.LocalTimezone()
@@ -151,7 +151,7 @@ class lereloj:
         # killSwitch variable
         run = True
         # This enables/disables option selection
-        editMode = False
+        editMode = True
         # Initial Direction (based on rotation)
         direction = 1
         # Glitch managment. Not all screens have a glitch.
@@ -169,6 +169,9 @@ class lereloj:
             # Execute clock / calendar code, store in list.
             displaylist = self.leClock()
             # Check gamepad connected. If so, listen to inputs.
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE)):
+                    pygame.quit()         
             self.isGamepadConnected()
             if self.gamepadpresent:
                 g = self.gamepad
@@ -233,10 +236,6 @@ class lereloj:
             selectedText = str((displaylist[opt]))
             textPos = (self.size[0]//2+fontOffsetX,
                                 self.size[1]//2+fontOffsetY)
-            if opt == 2 or opt == 3 or opt == 4 or opt == 5:
-                glitch = True
-            else:
-                glitch = False
             if glitch == True:
                 self.screen.blit(gimage, grect)
             text = ptext.draw(selectedText, textPos,
